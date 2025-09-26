@@ -6,6 +6,8 @@
  * Tom Spink <tcs6@st-andrews.ac.uk>
  */
 #include <stacsos/kernel/sched/alg/rr.h>
+#include <stacsos/kernel/debug.h>
+#include <stacsos/kernel/sched/schedulable-entity.h>
 
 // *** COURSEWORK NOTE *** //
 // This will be where you are implementing your round-robin scheduling algorithm.
@@ -15,8 +17,14 @@
 using namespace stacsos::kernel::sched;
 using namespace stacsos::kernel::sched::alg;
 
-void round_robin::add_to_runqueue(tcb &tcb) { panic("TODO"); }
+void round_robin::add_to_runqueue(tcb &tcb) { 
+	
+	// runqueue_ is a queue full of tcbs. each tcb handles a thread
+	runqueue_.enqueue(tcb);
+}
 
-void round_robin::remove_from_runqueue(tcb &tcb) { panic("TODO"); }
+void round_robin::remove_from_runqueue(tcb &tcb) { panic("TODO: rr_rem_runqueue"); }
 
-tcb *round_robin::select_next_task(tcb *current) { panic("TODO"); }
+
+// tcb is the thread control block
+tcb *round_robin::select_next_task(tcb *current) { panic("TODO: rr_select"); }
