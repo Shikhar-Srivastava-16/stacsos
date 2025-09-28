@@ -14,7 +14,6 @@ using namespace stacsos::kernel::sched::alg;
 
 tcb *simple_fair_scheduler::select_next_task(tcb *current)
 {
-	dprintf("sfs call \n");	
 	if (runqueue_.empty()) {
 		return nullptr;
 	}
