@@ -19,20 +19,19 @@ using namespace stacsos::kernel::sched::alg;
 
 void round_robin::add_to_runqueue(tcb &tcb) { 
 	// runqueue_ is a queue full of tcbs. each tcb handles a thread
-	dprintf("-----------------meow---------------\n");
+	// dprintf("-----------------queueing task---------------\n");
 	runqueue_.enqueue(&tcb);
 }
 
-void round_robin::remove_from_runqueue(tcb &tcb) { 
-	//panic("TODO: rr_rem_runqueue");
-	dprintf("---------------no meow---------------\n");
+void round_robin::remove_from_runqueue(tcb &tcb) {
+	// remove jobs from the runqueue_
+	// dprintf("----------------removing queued task-------------\n");
 	runqueue_.remove(&tcb);
 }
 
 
-// tcb is the thread control block
 tcb *round_robin::select_next_task(tcb *current) { 
-	dprintf("rr call \n");
+	// dprintf("rr call \n");
 
 	if (runqueue_.empty()) {
 		return nullptr;
@@ -41,18 +40,13 @@ tcb *round_robin::select_next_task(tcb *current) {
 	if (runqueue_.count() == 1) {
 		return runqueue_.first();
 	}
+
 	u64 counter = 0;
 	for (auto *tcb_elem : runqueue_) {
-		
-		dprintf("queued thread: %u\n", counter);
+		dprintf("-------queued thread: %u-------\n", counter);
 		counter++;
-
-
-		// if (candidate == nullptr || (thread->run_time < min_runtime)) {
-		// 	min_runtime = thread->run_time;
-		// 	candidate = thread;
-		// }
 	}
+	dprintf("current threads: %u\n", counter);
 	
 	runqueue_.enqueue(runqueue_.dequeue());
 
