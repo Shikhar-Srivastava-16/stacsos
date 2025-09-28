@@ -34,13 +34,16 @@ tcb *round_robin::select_next_task(tcb *current) {
 	// dprintf("rr call \n");
 
 	if (runqueue_.empty()) {
+		// return nothing if queue empty
 		return nullptr;
 	}
 
 	if (runqueue_.count() == 1) {
+		// return first if queue is 1-long
 		return runqueue_.first();
 	}
 
+	// counter, only for doc and test
 	u64 counter = 0;
 	for (auto *tcb_elem : runqueue_) {
 		dprintf("-------queued thread: %u-------\n", counter);
