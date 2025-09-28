@@ -19,13 +19,13 @@ using namespace stacsos::kernel::sched::alg;
 
 void round_robin::add_to_runqueue(tcb &tcb) { 
 	// runqueue_ is a queue full of tcbs. each tcb handles a thread
-	dprintf("meow");
+	dprintf("-----------------meow---------------\n");
 	runqueue_.enqueue(&tcb);
 }
 
 void round_robin::remove_from_runqueue(tcb &tcb) { 
 	//panic("TODO: rr_rem_runqueue");
-	
+	dprintf("---------------no meow---------------\n");
 	runqueue_.remove(&tcb);
 }
 
@@ -53,6 +53,8 @@ tcb *round_robin::select_next_task(tcb *current) {
 		// 	candidate = thread;
 		// }
 	}
+	
+	runqueue_.enqueue(runqueue_.dequeue());
 
-	return runqueue_.dequeue();
+	return runqueue_.first();
 }
