@@ -34,7 +34,6 @@ tcb *round_robin::select_next_task(tcb *current) {
 		return nullptr;
 	}
 	
-	u64 counter = 0;
 	for (auto *tcb_elem : runqueue_) {
 		// basically debug information
 		// useful to check if the round robin is actually moving things 'around'
@@ -46,11 +45,9 @@ tcb *round_robin::select_next_task(tcb *current) {
 
 		// In this case the element prints as a number (mem address) and allows us to 
 		// see that the tcb objects go round and round as the round robin scheduler demands
-		dprintf("-------queued thread %u-------\n", counter, tcb_elem);
-		counter++;
+		dprintf("-------queued thread %u-------\n", tcb_elem);
 	}
-	dprintf("current threads: %u\n", counter);
-
+	dprintf("\n\n");
 	if (runqueue_.count() != 1) {
 		// return first if queue is 1-long
 		runqueue_.enqueue(runqueue_.dequeue());

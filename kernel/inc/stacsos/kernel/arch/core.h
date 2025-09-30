@@ -12,6 +12,7 @@
 #include <stacsos/kernel/config.h>
 #include <stacsos/kernel/debug.h>
 #include <stacsos/kernel/sched/alg/rr.h>
+#include <stacsos/kernel/sched/alg/fcfs.h>
 #include <stacsos/kernel/sched/alg/scheduling-algorithm.h>
 #include <stacsos/kernel/sched/alg/sfs.h>
 #include <stacsos/kernel/sched/schedulable-entity.h>
@@ -53,6 +54,12 @@ public:
 			sched_alg_ = new alg::simple_fair_scheduler();
 		} else if (memops::strcmp(sched_alg_name, "rr") == 0) {
 			sched_alg_ = new alg::round_robin();
+		} else if (memops::strcmp(sched_alg_name, "fcfs") == 0) {
+			sched_alg_ = new alg::first_come_first_serve_scheduler();
+		} else if (memops::strcmp(sched_alg_name, "cfs") == 0) {
+			panic("Completely fair scheduler not yet implemented.");
+		} else if (memops::strcmp(sched_alg_name, "sjfs") == 0) {
+			panic("Shortest Job First Scheduler not yet implemented.");
 		} else {
 			panic("Unsupported scheduling algorithm '%s'", sched_alg_name);
 		}
