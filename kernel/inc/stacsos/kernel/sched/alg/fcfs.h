@@ -17,7 +17,7 @@ public:
 	virtual void add_to_runqueue(tcb &tcb) override { runqueue_.append(&tcb); }
 	virtual void remove_from_runqueue(tcb &tcb) override { runqueue_.remove(&tcb); }
 	virtual tcb *select_next_task(tcb *current) override;
-	virtual const char *name() const { return "simple fair"; }
+	virtual const char *name() const { return "first come first serve"; }
 
 private:
 	list<tcb *> runqueue_;

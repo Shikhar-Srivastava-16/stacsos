@@ -17,17 +17,6 @@
 using namespace stacsos::kernel::sched;
 using namespace stacsos::kernel::sched::alg;
 
-void round_robin::add_to_runqueue(tcb &tcb) { 
-	// runqueue_ is a queue full of tcbs. each tcb handles a thread
-	runqueue_.enqueue(&tcb);
-}
-
-void round_robin::remove_from_runqueue(tcb &tcb) {
-	// remove jobs from the runqueue_
-	runqueue_.remove(&tcb);
-}
-
-
 tcb *round_robin::select_next_task(tcb *current) { 
 	if (runqueue_.empty()) {
 		// return nothing if queue empty
@@ -42,15 +31,47 @@ tcb *round_robin::select_next_task(tcb *current) {
 		// or if it works in another way that also happens to work as a scheduler
 		// /usr/mandelbrot is a good way to test this, as is typing
 		// typing uses only one, so it shows that queueing and dequeueing is working
+		// sched-test and sched-test are good for making sure the scheduler is running, 
+		// but to check that is running as intended is not immediately obvious and requires more help. Running sched-test2 with this being printed is helpful
 
 		// In this case the element prints as a number (mem address) and allows us to 
 		// see that the tcb objects go round and round as the round robin scheduler demands
-		dprintf("-------queued thread %u-------\n", tcb_elem);
+		// it also shows in any multithreaded program that the same thread runs multiple times. We know it is the same, because it is never declared stopped in the OS' debug feed on stdout 
+		
+		/*
+		`	proc: thread stopped
+			-------queued thread 4102160, time: 12584836-------
+			-------queued thread 4102416, time: 38698820-------
+			-------queued thread 4103440, time: 4124727596-------
+			-------queued thread 4101648, time: 64815628-------
+			
+			
+			-------queued thread 4102416, time: 90933310-------
+			-------queued thread 4103440, time: 4124727596-------
+			-------queued thread 4101648, time: 64815628-------
+			-------queued thread 4102160, time: 12584836-------
+			
+			
+			proc: thread stopped
+			-------queued thread 4101648, time: 64815628-------
+			-------queued thread 4102160, time: 12584836-------
+			-------queued thread 4102416, time: 90933310-------
+			
+			
+			-------queued thread 4102160, time: 117049774-------
+			-------queued thread 4102416, time: 90933310-------
+			-------queued thread 4101648, time: 64815628-------
+		*/
+		
+		// That shows that there are threads being rotated properly even when some of them are being stopped
+
+		dprintf("-------queued thread %u, time: %u-------\n", tcb_elem, tcb_elem->run_time);
 	}
 	dprintf("\n\n");
 	if (runqueue_.count() != 1) {
-		// return first if queue is 1-long
-		runqueue_.enqueue(runqueue_.dequeue());
+		// rotate if there is more than one tcb 
+		// same as doing runqueue_.enqueue(runqueue_.dequeue());
+		runqueue_.rotate();
 	}
 
 	return runqueue_.first();
