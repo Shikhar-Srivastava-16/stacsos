@@ -28,7 +28,15 @@ using namespace stacsos::kernel::sched::alg;
 u64 shortest_job_first_scheduler::predict_next_burst(tcb &tcb)
 {
 	// set tcb.burst
-	return last_burst;
+
+	u64 alpha = 0.5;	// prediction
+	u64 tau_n = last_burst_prediction;
+	u64 t_n = last_burst;
+	// tau_n+1 = alpha.t_n + (1 - alpha).tau_n
+	u64 prediction = alpha * t_n + (1-alpha) * tau_n;
+
+	last_burst_prediction = prediction;
+	return prediction;
 } 
 
 void shortest_job_first_scheduler::add_to_runqueue(tcb &tcb) 
