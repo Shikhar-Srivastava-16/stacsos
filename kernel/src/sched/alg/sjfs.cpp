@@ -38,12 +38,13 @@ u64 shortest_job_first_scheduler::predict_next_burst(tcb &tcb)
 		last_burst_prediction_ = 1000; // 1 timer cycle
 	}
 	u64 alpha = 0.5;	// prediction constant
-	u64 t_n = last_burst_;
-	u64 tau_n = last_burst_prediction_;
 
+	u64 t_n = last_burst_;					// no persist
+	u64 tau_n = last_burst_prediction_;     // no persist
 
 	// tau_(n+1) = alpha.t_n + (1 - alpha).tau_n
 	u64 prediction = alpha * t_n + (1-alpha) * tau_n;
+	last_burst_prediction_ = prediction;
 
 	dprintf("%u \n", prediction);
 	return prediction;
@@ -57,7 +58,7 @@ void shortest_job_first_scheduler::add_to_runqueue(tcb &tcb)
 
 void shortest_job_first_scheduler::remove_from_runqueue(tcb &tcb)
 {
-	// last_burst = tcb.run_time;
+	last_burst_ = tcb.run_time;
 	runqueue_.remove(&tcb);
 }
 

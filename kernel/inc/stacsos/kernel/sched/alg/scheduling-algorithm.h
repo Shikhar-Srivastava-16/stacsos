@@ -18,6 +18,5 @@ public:
 	virtual void remove_from_runqueue(tcb &tcb) = 0;
 	virtual tcb *select_next_task(tcb *current) = 0;
 	virtual const char *name() const = 0;
-	u64 last_burst_;
 };
 } // namespace stacsos::kernel::sched::alg

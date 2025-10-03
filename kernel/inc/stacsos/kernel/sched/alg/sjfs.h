@@ -20,6 +20,7 @@ public:
 	virtual const char *name() const { return "shortest job first"; }
 	virtual u64 predict_next_burst(tcb &tcb);
 
+	u64 last_burst_;
 	u64 last_burst_prediction_;
 
 private:
