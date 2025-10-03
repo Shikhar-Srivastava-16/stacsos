@@ -26,6 +26,8 @@ struct tcb {
 	u64 start_time;	// 28
 	u64 stop_time;	// 30
 	u64 run_time;	// 38
+
+	u64 burst_estimate;
 } __packed;
 
 class schedulable_entity {

@@ -25,15 +25,15 @@ using namespace stacsos::kernel::sched::alg;
 
 // MORE complicated than the others. The problem is that we need to maintain burst time predictions and actual burst times
 
+u64 shortest_job_first_scheduler::predict_next_burst(tcb &tcb)
+{
+	// set tcb.burst
+	return last_burst;
+} 
+
 void shortest_job_first_scheduler::add_to_runqueue(tcb &tcb) 
 {
-// 	for (int i = 0; i < runqueue_.count(); i++) 
-// 	{
-// 		tcb tcb = runqueue_.at(i);
-// 		tcb tcb2 = runqueue_.at(i+1);
-// 		// if tcb burst is less than AND tcb2 burst is more than, add to i + 1 
-// 		
-// 	}	
+	tcb.burst_estimate = predict_next_burst(tcb);
 	runqueue_.enqueue(&tcb);
 }
 
@@ -65,14 +65,17 @@ tcb *shortest_job_first_scheduler::select_next_task(tcb *current)
 		return nullptr;
 	}
 
-	return runqueue_.first();
-	
-	// u64 time = 0;
-	// tcb *thread = nullptr;
-	// for (auto *thread : runqueue_)
-	// {
-	// 	// if burst time if less, change time to newest burst time, then change thread to this thread ptr
-		
-	// }
+	u64 time = 0;
+	tcb *returner = nullptr;
+	for (auto *thread : runqueue_)
+	{
+		// if burst time if less, change time to newest burst time, then change thread to this thread ptr
+		if (returner == nullptr || thread->burst_estimate < returner->burst_estimate)
+		{
+			returner = thread;
+		}
+	}
+	// return runqueue_.first();
+	return returner;
 }
 

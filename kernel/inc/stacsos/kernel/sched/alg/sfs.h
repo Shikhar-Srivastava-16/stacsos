@@ -18,7 +18,6 @@ public:
 	virtual void remove_from_runqueue(tcb &tcb) override { runqueue_.remove(&tcb); }
 	virtual tcb *select_next_task(tcb *current) override;
 	virtual const char *name() const { return "simple fair"; }
-
 private:
 	list<tcb *> runqueue_;
 };

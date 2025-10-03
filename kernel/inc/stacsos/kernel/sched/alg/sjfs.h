@@ -18,6 +18,8 @@ public:
 	virtual void remove_from_runqueue(tcb &tcb) override;
 	virtual tcb *select_next_task(tcb *current) override;
 	virtual const char *name() const { return "shortest job first"; }
+	virtual u64 predict_next_burst(tcb &tcb);
+
 	u64 last_burst;
 	u64 last_burst_prediction;
 

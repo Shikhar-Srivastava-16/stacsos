@@ -76,7 +76,11 @@ public:
 	virtual timer &local_timer() = 0;
 
 	void add_to_runqueue(tcb &tcb) { sched_alg_->add_to_runqueue(tcb); }
-	void remove_from_runqueue(tcb &tcb) { sched_alg_->remove_from_runqueue(tcb); }
+	void remove_from_runqueue(tcb &tcb) { 
+		sched_alg_->remove_from_runqueue(tcb);
+		dprintf("-------add a thing-------\n");
+		sched_alg_->last_burst = tcb.run_time;
+	}
 
 	void schedule();
 
@@ -89,6 +93,7 @@ public:
 	const irq_manager &irqs() const { return irqs_; }
 
 	void update_accounting();
+
 
 private:
 	int id_;
