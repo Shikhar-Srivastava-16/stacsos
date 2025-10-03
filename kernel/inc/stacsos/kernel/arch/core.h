@@ -31,6 +31,11 @@ class core {
 	friend class core_manager;
 
 public:
+
+	u64 last_burst;
+	u64 last_burst_prediction;
+
+
 	static int this_core_id() { return (int)x86::msrs::ia32_tsc_aux; }
 
 	static core &this_core();
@@ -78,8 +83,10 @@ public:
 	void add_to_runqueue(tcb &tcb) { sched_alg_->add_to_runqueue(tcb); }
 	void remove_from_runqueue(tcb &tcb) { 
 		sched_alg_->remove_from_runqueue(tcb);
-		dprintf("-------add a thing-------\n");
-		sched_alg_->last_burst = tcb.run_time;
+		dprintf("-------add a burst: %u-------\n", tcb.run_time);
+		if (tcb.run_time != 0) {
+			sched_alg_->last_burst_ = tcb.run_time;
+		}
 	}
 
 	void schedule();

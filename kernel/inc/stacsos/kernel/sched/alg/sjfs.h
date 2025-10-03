@@ -20,8 +20,7 @@ public:
 	virtual const char *name() const { return "shortest job first"; }
 	virtual u64 predict_next_burst(tcb &tcb);
 
-	u64 last_burst;
-	u64 last_burst_prediction;
+	u64 last_burst_prediction_;
 
 private:
 	list<tcb *> runqueue_;
