@@ -57,20 +57,22 @@ void shortest_job_first_scheduler::add_to_runqueue(tcb &tcb)
 
 void shortest_job_first_scheduler::remove_from_runqueue(tcb &tcb)
 {
-	runqueue.remove(&tcb);
+	runqueue_.remove(&tcb);
 }
 tcb *shortest_job_first_scheduler::select_next_task(tcb *current)
 {
 	if (runqueue_.empty()) {
 		return nullptr;
 	}
+
+	return runqueue_.first();
 	
-	u64 time = 0;
-	tcb *thread = nullptr;
-	for (auto *thread : runqueue_)
-	{
-		// if burst time if less, change time to newest burst time, then change thread to this thread ptr
-		u64 burst =
-	}
+	// u64 time = 0;
+	// tcb *thread = nullptr;
+	// for (auto *thread : runqueue_)
+	// {
+	// 	// if burst time if less, change time to newest burst time, then change thread to this thread ptr
+		
+	// }
 }
 
