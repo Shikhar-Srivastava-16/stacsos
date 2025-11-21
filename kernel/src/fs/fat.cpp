@@ -181,7 +181,6 @@ size_t fat_file::stat(void *buffer, size_t length)
 	for (auto child : children_)
 	{
 		auto ptr = child->name().c_str();
-		// statl *st = child->mk_stat();
 		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
 		memops::memcpy(buffer, ptr, 64); 
 	}
