@@ -28,6 +28,11 @@ int main(const char *cmdline)
 	char* stat_buffer = new char[4096];
 	auto foo = file->stat(stat_buffer, 0);
 
+	// char* temp = new char[64];
+	// statl *st_rec = new statl;
+
+	
+
 	delete file;
 	return 0;
 }

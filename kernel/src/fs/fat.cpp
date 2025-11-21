@@ -9,6 +9,7 @@
 #include <stacsos/kernel/dev/storage/block-device.h>
 #include <stacsos/kernel/fs/fat.h>
 #include <stacsos/memops.h>
+#include <stacsos/statl.h>
 
 using namespace stacsos;
 using namespace stacsos::kernel::fs;
@@ -166,8 +167,6 @@ size_t fat_file::stat(void *buffer, size_t length)
 		return 1;
 	}
 
-	dprintf("fat_file: stat syscall invocation\n");
-
 	auto *child_nodes = children_.empty() ? nullptr : children_.first();
 	
 	if (!child_nodes) {
@@ -175,16 +174,18 @@ size_t fat_file::stat(void *buffer, size_t length)
 		return 1;
 	}
 	
-	dprintf("fat_file: children present\n");
 	dprintf("number of children: %u\n", children_.count());
 
 	for (auto child : children_)
 	{
 		auto ptr = child->name().c_str();
 		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
-		memops::memcpy(buffer, ptr, 64); 
-	}
+		
+		statl *st = new statl();
+		memops::memcpy(st->name, child->name().c_str(), sizeof(st->name));
+		memops::memcpy(buffer, st, sizeof(statl)); 
 
+	}
 	return 0;
 }
 
