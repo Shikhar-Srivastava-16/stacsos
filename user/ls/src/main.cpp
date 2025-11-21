@@ -29,9 +29,11 @@ int main(const char *cmdline)
 	auto foo = file->stat(stat_buffer, 0);
 
 	// char* temp = new char[64];
-	// statl *st_rec = new statl;
+	statl *st_rec = new statl();
 
-	
+	memops::memcpy(st_rec, stat_buffer, sizeof(statl));
+
+	console::get().writef("AAAAH: %s\n", st_rec->name);
 
 	delete file;
 	return 0;
