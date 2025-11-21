@@ -16,14 +16,16 @@
 namespace stacsos::kernel::fs {
 class fat_filesystem;
 class fat_file;
+class fat_node;
 
 class fat_file : public file {
 public:
-	fat_file(fat_filesystem &fs, u64 first_cluster, u64 file_size)
+	fat_file(fat_filesystem &fs, u64 first_cluster, u64 file_size, list<fat_node *> &children)
 		: file(file_size)
 		, fs_(fs)
 		, clusters_(nullptr)
 		, nr_clusters_(0)
+		, children_(children)
 	{
 		read_cluster_list(first_cluster, file_size);
 	}
@@ -33,12 +35,16 @@ public:
 	virtual size_t pread(void *buffer, size_t offset, size_t length);
 	virtual size_t pwrite(const void *buffer, size_t offset, size_t length);
 
+	// stat syscall
+	virtual size_t stat(void *buffer, size_t length);
+
 private:
 	void read_cluster_list(u64 first_cluster, u64 file_size);
 
 	fat_filesystem &fs_;
 	u64 *clusters_;
 	u64 nr_clusters_;
+	list<fat_node *> children_;
 };
 
 class fat_node : public fs_node {
@@ -56,8 +62,10 @@ public:
 
 	virtual ~fat_node() { }
 
-	virtual shared_ptr<file> open() override { return shared_ptr<file>(new fat_file((fat_filesystem &)fs(), cluster_, data_size_)); }
+	virtual shared_ptr<file> open() override { return shared_ptr<file>(new fat_file((fat_filesystem &)fs(), cluster_, data_size_, children_)); }
 	virtual fs_node *mkdir(const char *name) override;
+
+	u64 size() {return data_size_;};
 
 protected:
 	virtual fs_node *resolve_child(const string &name) override;

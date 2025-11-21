@@ -160,6 +160,35 @@ fs_node *fat_node::resolve_child(const string &name)
 	return nullptr;
 }
 
+size_t fat_file::stat(void *buffer, size_t length)
+{
+	if (buffer == nullptr) {
+		return 1;
+	}
+
+	dprintf("fat_file: stat syscall invocation\n");
+
+	auto *child_nodes = children_.empty() ? nullptr : children_.first();
+	
+	if (!child_nodes) {
+		dprintf("fat_file: no children\n");
+		return 1;
+	}
+	
+	dprintf("fat_file: children present\n");
+	dprintf("number of children: %u\n", children_.count());
+
+	for (auto child : children_)
+	{
+		auto ptr = child->name().c_str();
+		// statl *st = child->mk_stat();
+		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
+		memops::memcpy(buffer, ptr, 64); 
+	}
+
+	return 0;
+}
+
 void fat_node::load()
 {
 	if (loaded_) {
