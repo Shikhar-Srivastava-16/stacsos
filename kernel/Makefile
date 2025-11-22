@@ -14,7 +14,7 @@ deps := $(c-srcs:.cpp=.d)
 cxxflags := -I $(lib-inc-dir) -I $(inc-dir) -include $(inc-dir)/stacsos/kernel/kernel-global.h
 cxxflags += -mcmodel=kernel
 cxxflags += -nostdinc -nostdlib -include $(lib-inc-dir)/global.h
-cxxflags += -std=gnu++23 -O3 -Wall -g
+cxxflags += -std=gnu++23 -O0 -Wall -g
 cxxflags += -march=native -no-pie -fno-pic
 cxxflags += -ffreestanding -fno-builtin -fno-omit-frame-pointer -fno-rtti -fno-exceptions
 cxxflags += -fno-delete-null-pointer-checks -fcheck-new -mno-red-zone -fno-stack-protector

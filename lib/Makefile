@@ -11,7 +11,7 @@ deps := $(c-srcs:.cpp=.d)
 
 cxxflags := -I $(inc-dir)
 cxxflags += -nostdinc -nostdlib -include $(inc-dir)/global.h
-cxxflags += -std=gnu++23 -O3 -Wall -g
+cxxflags += -std=gnu++23 -O0 -Wall -g
 cxxflags += -march=native
 cxxflags += -ffreestanding -fno-builtin -fno-omit-frame-pointer -fno-rtti -fno-exceptions
 cxxflags += -fno-delete-null-pointer-checks -fcheck-new -mno-red-zone -fno-stack-protector

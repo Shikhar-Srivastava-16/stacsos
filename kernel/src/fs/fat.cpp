@@ -167,25 +167,27 @@ size_t fat_file::stat(void *buffer, size_t length)
 		return 1;
 	}
 
-	auto *child_nodes = children_.empty() ? nullptr : children_.first();
+	// auto *child_nodes = children_.empty() ? nullptr : children_.first();
 	
-	if (!child_nodes) {
-		dprintf("fat_file: no children\n");
-		return 1;
-	}
+	// if (!child_nodes) {
+	// 	dprintf("fat_file: no children\n");
+	// 	return 1;
+	// }
 	
 	dprintf("number of children: %u\n", children_.count());
 
+	off_t offset = 0; 
+
 	for (auto child : children_)
 	{
-		auto ptr = child->name().c_str();
-		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
-		
 		statl *st = new statl();
 		memops::memcpy(st->name, child->name().c_str(), sizeof(st->name));
-		memops::memcpy(buffer, st, sizeof(statl)); 
-
+		memops::memcpy((buffer + offset), st, sizeof(statl)); 
+		offset += sizeof(statl);
 	}
+
+	memops::memset(buffer + offset + 1, '\0', 1);
+
 	return 0;
 }
 

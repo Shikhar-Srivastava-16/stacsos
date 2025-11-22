@@ -31,10 +31,23 @@ int main(const char *cmdline)
 	// char* temp = new char[64];
 	statl *st_rec = new statl();
 
-	memops::memcpy(st_rec, stat_buffer, sizeof(statl));
+	bool flag_hidden = 0;
 
-	console::get().writef("AAAAH: %s\n", st_rec->name);
+	off_t buf_offset = 0;
+	while(buf_offset < 4096) {
+		if (*(stat_buffer + buf_offset) == '\0') {
+			break;
+		}
+
+		memops::memcpy(st_rec, stat_buffer + buf_offset, sizeof(statl));
+		console::get().writef("AAAAH: %s\n", st_rec->name);
+
+		buf_offset += sizeof(statl);
+	}
+
 
 	delete file;
+	delete st_rec;
+	// delete foo;
 	return 0;
 }
