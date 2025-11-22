@@ -20,12 +20,13 @@ class fat_node;
 
 class fat_file : public file {
 public:
-	fat_file(fat_filesystem &fs, u64 first_cluster, u64 file_size, list<fat_node *> &children)
+	fat_file(fat_filesystem &fs, u64 first_cluster, u64 file_size, list<fat_node *> &children, fat_node &fat_man)
 		: file(file_size)
 		, fs_(fs)
 		, clusters_(nullptr)
 		, nr_clusters_(0)
 		, children_(children)
+		, manager_(fat_man)
 	{
 		read_cluster_list(first_cluster, file_size);
 	}
@@ -45,6 +46,7 @@ private:
 	u64 *clusters_;
 	u64 nr_clusters_;
 	list<fat_node *> children_;
+	fat_node &manager_;
 };
 
 class fat_node : public fs_node {
@@ -62,8 +64,13 @@ public:
 
 	virtual ~fat_node() { }
 
-	virtual shared_ptr<file> open() override { return shared_ptr<file>(new fat_file((fat_filesystem &)fs(), cluster_, data_size_, children_)); }
+	virtual shared_ptr<file> open() override { return shared_ptr<file>(new fat_file((fat_filesystem &)fs(), cluster_, data_size_, children_, *this)); }
 	virtual fs_node *mkdir(const char *name) override;
+
+	list<fat_node *> get_children() {
+		load();
+		return children_;
+	};
 
 	u64 size() {return data_size_;};
 
