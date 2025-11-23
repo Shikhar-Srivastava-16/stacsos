@@ -29,7 +29,7 @@ int main(const char *cmdline)
 	}
 
 
-	char* stat_buffer = new char[4096];
+	char* stat_buffer = new char[512];
 	auto foo = file->stat(stat_buffer, 0);
 
 	statl *st_rec = new statl();
