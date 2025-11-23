@@ -178,9 +178,10 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 	
 	off_t buf_offset = 0;
 
+	off_t count = 0;
+
 	for (auto child : manager_->get_children())
 	{
-
 		if (off != 0) {
 			off--;
 			continue;
@@ -195,6 +196,12 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 		st->type = child->kind() == fs_node_kind::file ? 0 : 1;
 		memops::memcpy(buffer + buf_offset, st, sizeof(statl)); 
 		buf_offset += sizeof(statl);
+	
+		count ++;
+		if (count >= off+length) {
+			dprintf("breaking stat\n");
+			break;
+		}
 	}
 	memops::memset(buffer + buf_offset + 1, '\0', 1);
 	return 0;
