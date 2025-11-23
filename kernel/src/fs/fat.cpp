@@ -167,22 +167,24 @@ size_t fat_file::stat(void *buffer, size_t length)
 		return 1;
 	}
 
-	auto *child_nodes = children_.empty() ? nullptr : children_.first();
+	// auto *child_nodes = manager_.get_children() ? nullptr : managerchildren.first();
 	
-	if (!child_nodes) {
-		dprintf("fat_file: no children\n");
-		return 1;
-	}
+	// if (!child_nodes) {
+	// 	dprintf("fat_file: no children\n");
+	// 	return 1;
+	// }
 	
-	dprintf("number of children: %u\n", children_.count());
+	dprintf("number of children: %u\n", manager_->get_children().count());
 
-	for (auto child : children_)
+	for (auto child : manager_->get_children())
 	{
 		auto ptr = child->name().c_str();
 		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
 		
 		statl *st = new statl();
 		memops::memcpy(st->name, child->name().c_str(), sizeof(st->name));
+		st->size = child->size();
+		st->type = child->kind() == fs_node_kind::file ? 0 : 1;
 		memops::memcpy(buffer, st, sizeof(statl)); 
 
 	}

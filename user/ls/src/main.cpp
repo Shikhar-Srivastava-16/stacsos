@@ -28,12 +28,11 @@ int main(const char *cmdline)
 	char* stat_buffer = new char[4096];
 	auto foo = file->stat(stat_buffer, 0);
 
-	// char* temp = new char[64];
 	statl *st_rec = new statl();
 
 	memops::memcpy(st_rec, stat_buffer, sizeof(statl));
 
-	console::get().writef("AAAAH: %s\n", st_rec->name);
+	console::get().writef("AAAAH: %s; sized: %u; typed: %u\n", st_rec->name, st_rec->size, st_rec->type);
 
 	delete file;
 	return 0;
