@@ -19,11 +19,15 @@ int main(const char *cmdline)
 		return 1;
 	}
 
+	bool flag_hidden = 1;
+	bool flag_long = 1;
+
 	object *file = object::open(cmdline);
 	if (!file) {
 		console::get().writef("error: unable to open file '%s' for ls command\n", cmdline);
 		return 1;
 	}
+
 
 	char* stat_buffer = new char[4096];
 	auto foo = file->stat(stat_buffer, 0);
@@ -33,11 +37,21 @@ int main(const char *cmdline)
 	off_t offset = 0;
 
 	while (offset <= 4096 && *(stat_buffer + offset) != '\0') {
-		
 		memops::memcpy(st_rec, stat_buffer + offset, sizeof(statl));
-		console::get().writef("AAAAH: %s; sized: %u; typed: %u\n", st_rec->name, st_rec->size, st_rec->type);
+		if (flag_hidden == 0 && st_rec->name[0] == '.') {
+			offset += sizeof(statl);
+			continue; 
+		}
+
+		if (flag_long == 1)  {
+			char type_marker = st_rec->type == 0 ? 'F' : 'D';
+			console::get().writef("[ %c ] %s %u\n", type_marker, st_rec->name, st_rec->size);
+		} else {
+			console::get().writef("%s\n", st_rec->name);
+		}
 		offset += sizeof(statl);
 	}
+
 	delete st_rec;
 	delete stat_buffer;
 	delete file;
