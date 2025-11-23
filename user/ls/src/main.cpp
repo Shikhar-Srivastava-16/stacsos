@@ -29,10 +29,16 @@ int main(const char *cmdline)
 	auto foo = file->stat(stat_buffer, 0);
 
 	statl *st_rec = new statl();
-	memops::memcpy(st_rec, stat_buffer, sizeof(statl));
-	console::get().writef("AAAAH: %s; sized: %u; typed: %u\n", st_rec->name, st_rec->size, st_rec->type);
-	delete st_rec;
+	
+	off_t offset = 0;
 
+	while (offset <= 4096 && *(stat_buffer + offset) != '\0') {
+		
+		memops::memcpy(st_rec, stat_buffer + offset, sizeof(statl));
+		console::get().writef("AAAAH: %s; sized: %u; typed: %u\n", st_rec->name, st_rec->size, st_rec->type);
+		offset += sizeof(statl);
+	}
+	delete st_rec;
 	delete stat_buffer;
 	delete file;
 	return 0;
