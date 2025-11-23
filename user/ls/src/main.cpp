@@ -19,8 +19,31 @@ int main(const char *cmdline)
 		return 1;
 	}
 
-	bool flag_hidden = 1;
-	bool flag_long = 1;
+	bool flag_hidden = false;
+	bool flag_long = false;
+
+	while (*cmdline) {
+		if (*cmdline == '-') {
+			cmdline++;
+
+			if (*cmdline++ == 'l') {
+				flag_long = true;
+			} 
+			// else if (*cmdline++ == 'a'){
+			// 	flag_hidden = true;
+			// } 
+			else {
+				console::get().write("error: usage: ls [-l] <filename>\n");
+				return 1;
+			}
+		} else {
+			break;
+		}
+	}
+
+	while (*cmdline == ' ') {
+		cmdline++;
+	};
 
 	object *file = object::open(cmdline);
 	if (!file) {
@@ -28,24 +51,32 @@ int main(const char *cmdline)
 		return 1;
 	}
 
+	size_t buf_size = 512;
 
-	char* stat_buffer = new char[512];
+	char* stat_buffer = new char[buf_size];
 	auto foo = file->stat(stat_buffer, 0);
 
 	statl *st_rec = new statl();
 	
 	off_t offset = 0;
 
-	while (offset <= 4096 && *(stat_buffer + offset) != '\0') {
+
+
+	while (offset <= buf_size - sizeof(statl) && *(stat_buffer + offset) != '\0') {
 		memops::memcpy(st_rec, stat_buffer + offset, sizeof(statl));
-		if (flag_hidden == 0 && st_rec->name[0] == '.') {
+		if (!flag_hidden && st_rec->name[0] == '.') {
 			offset += sizeof(statl);
 			continue; 
 		}
 
-		if (flag_long == 1)  {
-			char type_marker = st_rec->type == 0 ? 'F' : 'D';
-			console::get().writef("[ %c ] %s %u\n", type_marker, st_rec->name, st_rec->size);
+		if (flag_long)  {
+			char type_marker = st_rec->type == 1 ? 'D' : st_rec->type == 0 ? 'F' : '?';
+			
+			if (type_marker == 'D') {
+				console::get().writef("[ %c ] %s\n", type_marker, st_rec->name);
+			} else {
+				console::get().writef("[ %c ] %s    %u\n", type_marker, st_rec->name, st_rec->size);
+			}
 		} else {
 			console::get().writef("%s\n", st_rec->name);
 		}
