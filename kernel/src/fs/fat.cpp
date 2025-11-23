@@ -161,7 +161,7 @@ fs_node *fat_node::resolve_child(const string &name)
 	return nullptr;
 }
 
-size_t fat_file::stat(void *buffer, size_t length)
+size_t fat_file::stat(void *buffer, size_t length, off_t off)
 {
 	if (buffer == nullptr) {
 		return 1;
@@ -180,6 +180,12 @@ size_t fat_file::stat(void *buffer, size_t length)
 
 	for (auto child : manager_->get_children())
 	{
+
+		if (off != 0) {
+			off--;
+			continue;
+		}
+
 		auto ptr = child->name().c_str();
 		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
 		

@@ -33,7 +33,7 @@ int main(const char *cmdline)
 			// 	flag_hidden = true;
 			// } 
 			else {
-				console::get().write("error: usage: ls [-l] <filename>\n");
+				console::get().write("error: usage: ls [-l] [-a] <filename>\n");
 				return 1;
 			}
 		} else {
@@ -54,13 +54,11 @@ int main(const char *cmdline)
 	size_t buf_size = 512;
 
 	char* stat_buffer = new char[buf_size];
-	auto foo = file->stat(stat_buffer, 0);
+	auto foo = file->stat(stat_buffer, 0, 4);
 
 	statl *st_rec = new statl();
 	
 	off_t offset = 0;
-
-
 
 	while (offset <= buf_size - sizeof(statl) && *(stat_buffer + offset) != '\0') {
 		memops::memcpy(st_rec, stat_buffer + offset, sizeof(statl));

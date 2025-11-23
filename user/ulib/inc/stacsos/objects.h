@@ -23,7 +23,7 @@ public:
 	u64 ioctl(u64 cmd, void *buffer, size_t length);
 
 	// stat defined
-	size_t stat(void *buffer, size_t length);
+	size_t stat(void *buffer, size_t length, off_t off);
 
 private:
 	u64 handle_;

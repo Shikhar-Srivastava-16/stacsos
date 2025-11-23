@@ -44,7 +44,7 @@ public:
 	virtual size_t pwrite(const void *buffer, size_t offset, size_t length);
 
 	// define stat here, needed for inheritance from file class
-	virtual size_t stat(void *buffer, size_t length) override {return 0;};
+	virtual size_t stat(void *buffer, size_t length, off_t off) override {return 0;};
 
 private:
 	tar_filesystem &fs_;

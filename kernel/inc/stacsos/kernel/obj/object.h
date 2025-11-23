@@ -30,7 +30,7 @@ public:
 	u64 id() const { return id_; }
 
 	// syscall fake made here
-	virtual operation_result stat(void *buffer, size_t length) { return operation_result::not_supported(); }
+	virtual operation_result stat(void *buffer, size_t length, off_t off) { return operation_result::not_supported(); }
 	virtual operation_result read(void *buffer, size_t length) { return operation_result::not_supported(); }
 	virtual operation_result pread(void *buffer, size_t length, size_t offset) { return operation_result::not_supported(); }
 	virtual operation_result write(const void *buffer, size_t length) { return operation_result::not_supported(); }
@@ -58,7 +58,7 @@ public:
 	}
 
 	// actual syscall
-	virtual operation_result stat(void *buffer, size_t length) { return operation_result::ok(file_->stat(buffer, length)); }
+	virtual operation_result stat(void *buffer, size_t length, off_t off) { return operation_result::ok(file_->stat(buffer, length, off)); }
 	virtual operation_result read(void *buffer, size_t length) { return operation_result::ok(file_->read(buffer, length)); }
 	virtual operation_result pread(void *buffer, size_t length, size_t offset) { return operation_result::ok(file_->pread(buffer, offset, length)); }
 	virtual operation_result write(const void *buffer, size_t length) { return operation_result::ok(file_->write(buffer, length)); }

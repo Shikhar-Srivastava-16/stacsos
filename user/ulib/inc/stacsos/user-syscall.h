@@ -47,9 +47,9 @@ public:
 	}
 
 	// Definition of stat syscall
-	static rw_result stat(u64 object, void *buffer, u64 length)
+	static rw_result stat(u64 object, void *buffer, size_t length, off_t off)
 	{
-		auto r = syscall3(syscall_numbers::stat, object, (u64)buffer, length);
+		auto r = syscall4(syscall_numbers::stat, object, (u64)buffer, length, off);
 		return rw_result { r.code, r.data };
 	}
 
