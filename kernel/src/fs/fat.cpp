@@ -173,12 +173,9 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 	// 	dprintf("fat_file: no children\n");
 	// 	return 1;
 	// }
-	
-	dprintf("number of children: %u\n", manager_->get_children().count());
+	size_t exit_code = 0;
 	
 	off_t buf_offset = 0;
-
-	off_t count = 0;
 
 	for (auto child : manager_->get_children())
 	{
@@ -196,15 +193,16 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 		st->type = child->kind() == fs_node_kind::file ? 0 : 1;
 		memops::memcpy(buffer + buf_offset, st, sizeof(statl)); 
 		buf_offset += sizeof(statl);
-	
-		count ++;
-		if (count >= off+length) {
-			dprintf("breaking stat\n");
+
+		if (buf_offset >= length-1) {
+			dprintf("buffer too smol\n");
+			exit_code = 1;
 			break;
 		}
+
 	}
 	memops::memset(buffer + buf_offset + 1, '\0', 1);
-	return 0;
+	return exit_code;
 }
 
 void fat_node::load()

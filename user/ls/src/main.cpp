@@ -29,7 +29,6 @@ int main(const char *cmdline)
 			cmdline++;
 
 			if (*cmdline == 'l') {
-				console::get().write("foo\n");
 				flag_long = true;
 				
 				if (*(cmdline + 1) == 'a') {
@@ -52,7 +51,6 @@ int main(const char *cmdline)
 					cmdline++;
 				}
 			} else if (*cmdline == 'a'){
-				console::get().write("foo2\n");
 				flag_hidden = true;
 				cmdline++;
 			} else {
@@ -77,14 +75,20 @@ int main(const char *cmdline)
 		return 1;
 	}
 
-	stat_res(4, flag_hidden, flag_long, file);
+	off_t stat_offset = 0;
+	size_t err = stat_res(stat_offset, flag_hidden, flag_long, file);
+
+	while (err != 0) {
+		stat_offset += 2;
+		err = stat_res(stat_offset, flag_hidden, flag_long, file);
+	}
 
 	return 0;
 }
 
 int stat_res(off_t stat_offset, bool flag_hidden, bool flag_long, object *file) {
 
-	size_t buf_size = sizeof(statl) * 32 + 1;
+	size_t buf_size = sizeof(statl) * 2 + 1;
 
 	char* stat_buffer = new char[buf_size];
 	size_t err = file->stat(stat_buffer, buf_size, stat_offset);
@@ -117,5 +121,5 @@ int stat_res(off_t stat_offset, bool flag_hidden, bool flag_long, object *file) 
 	delete st_rec;
 	delete stat_buffer;
 	delete file; 
-	return 0;
+	return err;
 }
