@@ -163,18 +163,12 @@ fs_node *fat_node::resolve_child(const string &name)
 
 size_t fat_file::stat(void *buffer, size_t length, off_t off)
 {
+	// err types: 1 -> buf too small; 2-> no buf - cannot use
 	if (buffer == nullptr) {
-		return 1;
+		return 2;
 	}
 
-	// auto *child_nodes = manager_.get_children() ? nullptr : managerchildren.first();
-	
-	// if (!child_nodes) {
-	// 	dprintf("fat_file: no children\n");
-	// 	return 1;
-	// }
 	size_t exit_code = 0;
-	
 	off_t buf_offset = 0;
 
 	for (auto child : manager_->get_children())
@@ -184,8 +178,7 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 			continue;
 		}
 
-		auto ptr = child->name().c_str();
-		dprintf("writing for file: %s, sized: %d\n", ptr, child->size());
+		auto const_name = child->name().c_str();
 		
 		statl *st = new statl();
 		memops::memcpy(st->name, child->name().c_str(), sizeof(st->name));
@@ -195,11 +188,9 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 		buf_offset += sizeof(statl);
 
 		if (buf_offset >= length-1) {
-			dprintf("buffer too smol\n");
 			exit_code = 1;
 			break;
 		}
-
 	}
 	memops::memset(buffer + buf_offset + 1, '\0', 1);
 	return exit_code;
