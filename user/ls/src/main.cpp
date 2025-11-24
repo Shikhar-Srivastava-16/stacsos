@@ -70,6 +70,7 @@ int main(const char *cmdline)
 	// get only 16 entries at a time
 	// this helps because this setup of stacsos is low on memory
 	// it doesn't really work anyway, because freeing has not been implemented
+	// also works with very large numbers (largest tested was 64) 
 	size_t ents = 16;
 	size_t err = stat_res(ents, stat_offset, flag_hidden, flag_long, file);
 
