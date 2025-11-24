@@ -102,12 +102,11 @@ extern "C" syscall_result handle_syscall(syscall_numbers index, u64 arg0, u64 ar
 		return operation_result_to_syscall_result(o->read((void *)arg1, arg2));
 	}
 
-	case syscall_numbers::stat: {
+	case syscall_numbers::dirents: {
 		auto obj = object_manager::get().get_object(current_process, arg0);
 		if (!obj) {
 			return syscall_result { syscall_result_code::not_found, 0 };
 		}
-		dprintf("stat syscall reached kernel\n");
 		return operation_result_to_syscall_result(obj->dirents((void*)arg1, arg2, arg3));
 	}
 

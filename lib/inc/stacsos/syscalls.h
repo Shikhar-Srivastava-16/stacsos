@@ -29,7 +29,7 @@ enum class syscall_numbers {
 	sleep = 15,
 	poweroff = 16,
 	ioctl = 17,
-	stat = 18
+	dirents = 18
 };
 
 struct syscall_result {

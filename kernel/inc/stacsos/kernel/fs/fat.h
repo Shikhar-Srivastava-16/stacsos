@@ -37,7 +37,7 @@ public:
 	virtual size_t pread(void *buffer, size_t offset, size_t length);
 	virtual size_t pwrite(const void *buffer, size_t offset, size_t length);
 
-	// function used by stat syscall
+	// function used by syscall
 	virtual size_t dirents(void *buffer, size_t length, off_t off);
 
 private:

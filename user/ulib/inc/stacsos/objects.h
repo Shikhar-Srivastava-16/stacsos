@@ -22,7 +22,7 @@ public:
 
 	u64 ioctl(u64 cmd, void *buffer, size_t length);
 
-	// stat defined
+	// dirents method defined
 	size_t dirents(void *buffer, size_t length, off_t off);
 
 private:

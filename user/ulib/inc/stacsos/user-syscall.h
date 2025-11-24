@@ -49,7 +49,7 @@ public:
 	// Definition of tha actual call from user space
 	static rw_result dirents(u64 object, void *buffer, size_t length, off_t off)
 	{
-		auto r = syscall4(syscall_numbers::stat, object, (u64)buffer, length, off);
+		auto r = syscall4(syscall_numbers::dirents, object, (u64)buffer, length, off);
 		// basically 'reading' a directory's metadata as opposed to fa_result - no file is being 'opened' as this is called on an open file_ptr
 		return rw_result { r.code, r.data };
 	}
