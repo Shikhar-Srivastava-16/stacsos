@@ -30,37 +30,27 @@ int main(const char *cmdline)
 	while (*cmdline) {
 		if (*cmdline == '-') {
 			cmdline++;
-
-			if (*cmdline == 'l') {
-				flag_long = true;
-				
-				if (*(cmdline + 1) == 'a') {
+			// Parse flags until space or end
+			while (*cmdline && *cmdline != ' ') {
+				if (*cmdline == 'a') {
 					flag_hidden = true;
-					cmdline++;
+				} else if (*cmdline == 'l') {
+					flag_long = true;
+				} else {
+					console::get().write("error: usage: ls [-l] [-a] <filename>\n");
+					return 1;
 				}
 				cmdline++;
-				while (*cmdline && *cmdline != ' ') {
-					if (*cmdline == 'a') {
-						flag_hidden = true;
-					} else if (*cmdline == 'l') {
-						flag_long = true;
-					} else {
-						console::get().write("error: usage: ls [-l] [-a] <filename>\n");
-						return 1;
-					}
-					cmdline++;
-				}
-				while (*cmdline == ' ') {
-					cmdline++;
-				}
-			} else if (*cmdline == 'a'){
-				flag_hidden = true;
+			}
+			// skip any spaces after flags
+			while (*cmdline == ' ') {
 				cmdline++;
-			} else {
-				console::get().write("error: usage: ls [-l] [-a] <filename>\n");
-				return 1;
 			}
 
+			// If the next token does not start with '-', stop parsing
+			if (*cmdline != '-' && *cmdline != '\0') {
+				break;
+			}
 		} else {
 			break;
 		}
