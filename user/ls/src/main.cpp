@@ -12,6 +12,8 @@
 
 using namespace stacsos;
 
+int stat_res(off_t offset, bool flag_hidden, bool flag_long, object *file);
+
 int main(const char *cmdline)
 {
 	if (!cmdline || memops::strlen(cmdline) == 0) {
@@ -34,7 +36,6 @@ int main(const char *cmdline)
 					flag_hidden = true;
 					cmdline++;
 				}
-				// we've already seen an 'l' so advance past it and handle any combined flags like -la or -al
 				cmdline++;
 				while (*cmdline && *cmdline != ' ') {
 					if (*cmdline == 'a') {
@@ -47,7 +48,6 @@ int main(const char *cmdline)
 					}
 					cmdline++;
 				}
-				// skip spaces so the outer loop can detect another '-' token (e.g. "-l -a")
 				while (*cmdline == ' ') {
 					cmdline++;
 				}
@@ -77,12 +77,17 @@ int main(const char *cmdline)
 		return 1;
 	}
 
-	size_t buf_size = 48 * 32 + 1;
+	stat_res(4, flag_hidden, flag_long, file);
+
+	return 0;
+}
+
+int stat_res(off_t stat_offset, bool flag_hidden, bool flag_long, object *file) {
+
+	size_t buf_size = sizeof(statl) * 32 + 1;
 
 	char* stat_buffer = new char[buf_size];
-	size_t err = file->stat(stat_buffer, buf_size, 0);
-
-	// console::get().writef("[ %u ]\n", sizeof( statl));		==		48
+	size_t err = file->stat(stat_buffer, buf_size, stat_offset);
 
 	statl *st_rec = new statl();
  
@@ -111,6 +116,6 @@ int main(const char *cmdline)
 
 	delete st_rec;
 	delete stat_buffer;
-	delete file;
+	delete file; 
 	return 0;
 }
