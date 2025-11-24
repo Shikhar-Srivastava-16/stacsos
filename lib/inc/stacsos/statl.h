@@ -2,8 +2,6 @@
 
 /* StACSOS - Utility Library
  *
- * Copyright (c) University of St Andrews 2024
- * Tom Spink <tcs6@st-andrews.ac.uk>
  */
 #pragma once
 
@@ -14,11 +12,12 @@ class statl {
 public:
 	// file name
 	char name[32];
-	// file type (1 = file, 0 = dir)
+	// file type (1 = file, 0 = dir, others treated as unknown)
 	size_t type;
 	// file size
 	size_t size;
 
+	// constructor
 	statl()
 		: name("")
 		, type(0)

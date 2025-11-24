@@ -21,6 +21,7 @@ public:
 
 	virtual u64 ioctl(u64 cmd, void *buffer, size_t length) { return 0; }
 
+	// for inheritance from object
 	virtual size_t stat(void *buffer, size_t length, off_t off) {return 0;};
 
 	virtual size_t pread(void *buffer, size_t offset, size_t length) = 0;

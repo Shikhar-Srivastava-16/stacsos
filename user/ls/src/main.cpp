@@ -12,7 +12,7 @@
 
 using namespace stacsos;
 
-int stat_res(off_t offset, bool flag_hidden, bool flag_long, object *file);
+int stat_res(size_t ents, off_t offset, bool flag_hidden, bool flag_long, object *file);
 
 int main(const char *cmdline)
 {
@@ -21,9 +21,12 @@ int main(const char *cmdline)
 		return 1;
 	}
 
+	// flags for the errors
 	bool flag_hidden = false;
 	bool flag_long = false;
 	
+	// while loop for very primitive parsing
+	// ideally, this would have a parser like clap but stacsos doesn't have one
 	while (*cmdline) {
 		if (*cmdline == '-') {
 			cmdline++;
@@ -67,8 +70,6 @@ int main(const char *cmdline)
 		cmdline++;
 	};
 
-	console::get().writef("%u %u\n", flag_hidden, flag_long);
-
 	object *file = object::open(cmdline);
 	if (!file) {
 		console::get().writef("error: unable to open file '%s' for ls command\n", cmdline);
@@ -76,28 +77,39 @@ int main(const char *cmdline)
 	}
 
 	off_t stat_offset = 0;
-	size_t err = stat_res(stat_offset, flag_hidden, flag_long, file);
+	// get only 8 entries at a time
+	// this setup of stacsos is low on memory
+	// it doesn't really work anyway, because freeing has not been implemented
+	size_t ents = 8;
+	size_t err = stat_res(ents, stat_offset, flag_hidden, flag_long, file);
+
+	if (err == 3) {
+		console::get().writef("%s is not a directory.\n", cmdline);
+		// returning 0 because this is still expected behaviour. If this were allowed to go on, it would cause a segfault later on
+		return 0;
+	}
 
 	while (err != 0) {
-		stat_offset += 2;
-		err = stat_res(stat_offset, flag_hidden, flag_long, file);
+		stat_offset += ents;
+		err = stat_res(ents, stat_offset, flag_hidden, flag_long, file);
 	}
 
 	return 0;
 }
 
-int stat_res(off_t stat_offset, bool flag_hidden, bool flag_long, object *file) {
+int stat_res(size_t ents, off_t stat_offset, bool flag_hidden, bool flag_long, object *file) {
 
-	size_t buf_size = sizeof(statl) * 2 + 1;
+	size_t buf_size = sizeof(statl) * ents + 1;
 
 	char* stat_buffer = new char[buf_size];
-	size_t err = file->stat(stat_buffer, buf_size, stat_offset);
+	size_t exit_code = file->stat(stat_buffer, buf_size, stat_offset);
 
 	statl *st_rec = new statl();
  
 	off_t offset = 0;
 
 	while (offset <= buf_size - sizeof(statl) && *(stat_buffer + offset) != '\0') {
+		// use offset here instead of incrementing the starting ptr because we want to be able to delete the initial buffer, which was dynamically allocated
 		memops::memcpy(st_rec, stat_buffer + offset, sizeof(statl));
 		if (!flag_hidden && st_rec->name[0] == '.') {
 			offset += sizeof(statl);
@@ -121,5 +133,5 @@ int stat_res(off_t stat_offset, bool flag_hidden, bool flag_long, object *file) 
 	delete st_rec;
 	delete stat_buffer;
 	delete file; 
-	return err;
+	return exit_code;
 }

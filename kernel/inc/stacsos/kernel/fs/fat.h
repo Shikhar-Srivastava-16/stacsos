@@ -16,10 +16,12 @@
 namespace stacsos::kernel::fs {
 class fat_filesystem;
 class fat_file;
+// add forward decl of fat_node to allow access in fat_file  
 class fat_node;
 
 class fat_file : public file {
 public:
+	// add fat_node pointer to constructor to allow access of the creator fat_node
 	fat_file(fat_filesystem &fs, u64 first_cluster, u64 file_size, fat_node *fat_man)
 		: file(file_size)
 		, fs_(fs)
@@ -35,7 +37,7 @@ public:
 	virtual size_t pread(void *buffer, size_t offset, size_t length);
 	virtual size_t pwrite(const void *buffer, size_t offset, size_t length);
 
-	// stat syscall
+	// function used by stat syscall
 	virtual size_t stat(void *buffer, size_t length, off_t off);
 
 private:

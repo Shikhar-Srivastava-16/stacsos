@@ -9,6 +9,7 @@
 #include <stacsos/kernel/dev/storage/block-device.h>
 #include <stacsos/kernel/fs/fat.h>
 #include <stacsos/memops.h>
+// statl class is used a lot here, so this header file is needed
 #include <stacsos/statl.h>
 
 using namespace stacsos;
@@ -163,13 +164,19 @@ fs_node *fat_node::resolve_child(const string &name)
 
 size_t fat_file::stat(void *buffer, size_t length, off_t off)
 {
-	// err types: 1 -> buf too small; 2-> no buf - cannot use
+	// err types: 1 -> buf too small; 2-> no buf - cannot use; 3->not a directory
 	if (buffer == nullptr) {
 		return 2;
 	}
 
+	// need an exit code
 	size_t exit_code = 0;
 	off_t buf_offset = 0;
+
+	if (manager_->kind() == fs_node_kind::file) {
+		// not a directory
+		return 3;
+	}
 
 	for (auto child : manager_->get_children())
 	{
@@ -178,21 +185,33 @@ size_t fat_file::stat(void *buffer, size_t length, off_t off)
 			continue;
 		}
 
+
+		// get name of this child
 		auto const_name = child->name().c_str();
 		
+		// make a statl instance
 		statl *st = new statl();
+
+		// compose the struct
 		memops::memcpy(st->name, child->name().c_str(), sizeof(st->name));
 		st->size = child->size();
 		st->type = child->kind() == fs_node_kind::file ? 0 : 1;
 		memops::memcpy(buffer + buf_offset, st, sizeof(statl)); 
+		
+		// increment the buffer
 		buf_offset += sizeof(statl);
 
 		if (buf_offset >= length-1) {
+			// run out of space in the buffer (other than for the null terminator) but still may have entries
 			exit_code = 1;
 			break;
 		}
 	}
+
+	// null terminator
 	memops::memset(buffer + buf_offset + 1, '\0', 1);
+	
+	// exit code will be used for user error management
 	return exit_code;
 }
 

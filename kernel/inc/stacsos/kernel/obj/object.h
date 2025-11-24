@@ -29,7 +29,8 @@ public:
 
 	u64 id() const { return id_; }
 
-	// syscall fake made here
+	// function for use by syscall, define here to allow inherited function to be called later.
+	// actually calling it on an object inst which is not file_object will err
 	virtual operation_result stat(void *buffer, size_t length, off_t off) { return operation_result::not_supported(); }
 	virtual operation_result read(void *buffer, size_t length) { return operation_result::not_supported(); }
 	virtual operation_result pread(void *buffer, size_t length, size_t offset) { return operation_result::not_supported(); }
@@ -57,7 +58,7 @@ public:
 	{
 	}
 
-	// actual syscall
+	// add function override for use on trying to read file_object as a directory
 	virtual operation_result stat(void *buffer, size_t length, off_t off) { return operation_result::ok(file_->stat(buffer, length, off)); }
 	virtual operation_result read(void *buffer, size_t length) { return operation_result::ok(file_->read(buffer, length)); }
 	virtual operation_result pread(void *buffer, size_t length, size_t offset) { return operation_result::ok(file_->pread(buffer, offset, length)); }
