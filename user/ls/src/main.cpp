@@ -67,10 +67,10 @@ int main(const char *cmdline)
 	}
 
 	off_t stat_offset = 0;
-	// get only 8 entries at a time
-	// this setup of stacsos is low on memory
+	// get only 16 entries at a time
+	// this helps because this setup of stacsos is low on memory
 	// it doesn't really work anyway, because freeing has not been implemented
-	size_t ents = 8;
+	size_t ents = 16;
 	size_t err = stat_res(ents, stat_offset, flag_hidden, flag_long, file);
 
 	if (err == 3) {
