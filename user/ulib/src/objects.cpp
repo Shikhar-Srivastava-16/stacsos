@@ -23,7 +23,7 @@ object *object::open(const char *path)
 object::~object() { syscalls::close(handle_); }
 
 // implement the method which actually makes the syscall from user space
-size_t object::stat(void *buffer, size_t buf_length, off_t off) { return syscalls::stat(handle_, buffer, buf_length, off).length; };
+size_t object::dirents(void *buffer, size_t buf_length, off_t off) { return syscalls::dirents(handle_, buffer, buf_length, off).length; };
 size_t object::read(void *buffer, size_t length) { return syscalls::read(handle_, buffer, length).length; }
 size_t object::write(const void *buffer, size_t length) { return syscalls::write(handle_, buffer, length).length; }
 size_t object::pwrite(const void *buffer, size_t length, size_t offset) { return syscalls::pwrite(handle_, buffer, length, offset).length; }

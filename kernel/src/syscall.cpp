@@ -108,7 +108,7 @@ extern "C" syscall_result handle_syscall(syscall_numbers index, u64 arg0, u64 ar
 			return syscall_result { syscall_result_code::not_found, 0 };
 		}
 		dprintf("stat syscall reached kernel\n");
-		return operation_result_to_syscall_result(obj->stat((void*)arg1, arg2, arg3));
+		return operation_result_to_syscall_result(obj->dirents((void*)arg1, arg2, arg3));
 	}
 
 	case syscall_numbers::pread: {

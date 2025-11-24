@@ -102,7 +102,7 @@ int stat_res(size_t ents, off_t stat_offset, bool flag_hidden, bool flag_long, o
 	size_t buf_size = sizeof(statl) * ents + 1;
 
 	char* stat_buffer = new char[buf_size];
-	size_t exit_code = file->stat(stat_buffer, buf_size, stat_offset);
+	size_t exit_code = file->dirents(stat_buffer, buf_size, stat_offset);
 
 	statl *st_rec = new statl();
  

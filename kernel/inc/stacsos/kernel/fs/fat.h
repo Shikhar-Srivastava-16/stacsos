@@ -38,7 +38,7 @@ public:
 	virtual size_t pwrite(const void *buffer, size_t offset, size_t length);
 
 	// function used by stat syscall
-	virtual size_t stat(void *buffer, size_t length, off_t off);
+	virtual size_t dirents(void *buffer, size_t length, off_t off);
 
 private:
 	void read_cluster_list(u64 first_cluster, u64 file_size);

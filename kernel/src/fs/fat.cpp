@@ -162,7 +162,7 @@ fs_node *fat_node::resolve_child(const string &name)
 	return nullptr;
 }
 
-size_t fat_file::stat(void *buffer, size_t length, off_t off)
+size_t fat_file::dirents(void *buffer, size_t length, off_t off)
 {
 	// err types: 1 -> buf too small; 2-> no buf - cannot use; 3->not a directory
 	if (buffer == nullptr) {
