@@ -28,10 +28,15 @@ clean: $(clean-targets)
 
 run: all
 	$(qemu) \
+		# number of CPUs
 		-smp 4 \
+		# which machine is being emulated?
 		-machine q35 \
+		# full virtualisation support
 		-enable-kvm \
+		# memory size
 		-m 8G \
+		# which console is used for debugging? here, stdio
 		-debugcon stdio \
 		-cpu host \
 		-kernel $(out-dir)/stacsos \
