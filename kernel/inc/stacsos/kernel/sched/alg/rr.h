@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <stacsos/list.h>
+#include <stacsos/kernel/debug.h>
 #include <stacsos/kernel/sched/alg/scheduling-algorithm.h>
 
 namespace stacsos::kernel::sched::alg {
@@ -20,5 +22,8 @@ public:
 	virtual void remove_from_runqueue(tcb &tcb) override;
 	virtual tcb *select_next_task(tcb *current) override;
 	virtual const char *name() const { return "round robin"; }
+private:
+	list<tcb *> runqueue_;
 };
+
 } // namespace stacsos::kernel::sched::alg

@@ -15,8 +15,35 @@
 using namespace stacsos::kernel::sched;
 using namespace stacsos::kernel::sched::alg;
 
-void round_robin::add_to_runqueue(tcb &tcb) { panic("TODO"); }
+// fwd decl
 
-void round_robin::remove_from_runqueue(tcb &tcb) { panic("TODO"); }
+// this type will later turn into an actual float type. for now, only int
+using float_t = size_t;
 
-tcb *round_robin::select_next_task(tcb *current) { panic("TODO"); }
+float_t add(float_t op1, float_t op2);
+float_t sub(float_t op1, float_t op2);
+float_t mul(float_t op1, float_t op2);
+float_t div(float_t op1, float_t op2);
+
+void round_robin::add_to_runqueue(tcb &tcb) { runqueue_.enqueue(&tcb); }
+
+void round_robin::remove_from_runqueue(tcb &tcb) { runqueue_.remove(&tcb); }
+
+tcb *round_robin::select_next_task(tcb *current) { 
+    if (runqueue_.empty()) {
+        return nullptr;
+    }
+
+    if (runqueue_.count() > 1) {
+        runqueue_.rotate();
+    }
+
+    dprintf("adder: %d", add(1,3));
+
+    return runqueue_.first();
+}
+
+// function stubs for later methods
+float_t add(float_t op1, float_t op2) {
+    return op1+op2;
+}
